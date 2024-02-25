@@ -9,20 +9,26 @@ export enum UserStatus {
 @Entity()
 export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
-  user_id: number;
+  id: number;
 
-  @Column({ length: 20 })
-  user_role: string;
+  @Column({ length: 20, default: "ROLE_USER" })
+  role: string;
+
+  @Column({ length: 50, nullable: true })
+  connection_ip: string
+
+  @Column({ unique : true})
+  email: string
 
   @Column({ length: 50 })
-  user_name: string;
+  name: string;
 
   @Column({ length: 100 })
-  user_password: string;
+  passwd: string;
 
   @Column({ length: 20 })
-  user_phoneNumber: string;
+  phoneNumber: string;
 
-  @Column({ type: 'enum', enum: UserStatus, default: UserStatus.ACTIVE })
-  user_isActive: UserStatus;
+  @Column({ type: 'enum', enum: UserStatus, default: UserStatus.INACTIVE })
+  isActive: UserStatus;
 }

@@ -6,10 +6,11 @@ import { join } from 'path'; // Import join from the path module
 import { User } from './entities/user.entity';
 import { Product } from './entities/product.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ProductModule } from './product/product.module';
 import { ProductTagModule } from './product-tag/product-tag.module';
-import { ProductTagController } from './product-tag/product-tag.controller';
-import { ProductTagService } from './product-tag/product-tag.service';
+import { ProductTag } from './entities/product-tag.entity';
+import { UserService } from './user/user.service';
+import { UserModule } from './user/user.module';
+import { ConnectionIp } from './entities/connection-ip.entity';
 
 
 @Module({
@@ -21,27 +22,31 @@ import { ProductTagService } from './product-tag/product-tag.service';
     }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3400,
+      host: process.env.MYSQL_HOST,
+      port: 3306,
       username: process.env.MYSQL_USER_ID,
       password: process.env.MYSQL_ROOT_PASSWORD,
       database: process.env.MYSQL_DATABASE,
-      synchronize: true,
+      synchronize: false, // false가 안전
       entities:[
         User,
         Product,
+        ProductTag,
+        ConnectionIp
       ],
       autoLoadEntities:true,
       charset:'utf8mb4',
       logging:true, 
       keepConnectionAlive:true,
-
+      ssl: {
+        ca: process.env.MYSQL_SSL_CERT,
+      },
+      
     }),
-    ProductModule,
-    ProductTagModule
+    UserModule
   ],
-  controllers: [AppController, ProductTagController],
-  providers: [AppService, ProductTagService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 
 export class AppModule {}
